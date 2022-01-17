@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %} <title>Rekam Medis | MediClu</title> {% endblock title%}
+
+{% block content %}
+<div class="col-md-12 grid-margin">
+    <div class="d-flex justify-content-between flex-wrap">
+      <div class="d-flex align-items-end flex-wrap">
+        <div class="mr-md-3 mr-xl-5">
+        </div>
+        <div class="d-flex">
+          <i class="mdi mdi-home text-muted hover-cursor"></i>
+          <p class="text-muted mb-0 hover-cursor">&nbsp;/&nbsp;Dashboard&nbsp;/&nbsp;</p>
+          <p class="text-muted mb-0 hover-cursor">Rekam Medis&nbsp;/&nbsp;</p>
+          <p class="text-primary mb-0 hover-cursor">Pasien</p>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between align-items-end flex-wrap">
+        <button type="button" class="btn btn-light bg-white btn-icon mr-3 d-none d-md-block ">
+          <i class="mdi mdi-download text-muted"></i>
+        </button>
+        <button type="button" class="btn btn-light bg-white btn-icon mr-3 mt-2 mt-xl-0">
+          <i class="mdi mdi-clock-outline text-muted"></i>
+        </button>
+        <button type="button" class="btn btn-light bg-white btn-icon mr-3 mt-2 mt-xl-0">
+          <i class="mdi mdi-plus text-muted"></i>
+        </button>
+        <button onclick="importData()" class="btn btn-primary mt-2 mt-xl-0">Import</button>
+      </div>
+    </div>
+  </div>
+
+  {% include './form_import.html' %}
+
+  <div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Data Rekam Medis</h4>
+        <div class="table-responsive">
+          <table class="table table-hover" id="table">
+            <thead>
+              <tr>
+                <th>Nama Pasien</th>
+                <th>Jenis Kelamin</th>
+                <th>Usia</th>
+                <th>Alamat</th>
+                <th>Diagnosis</th>
+                <th>Kode Diagnosis</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+{% block css %}
+<style>
+  .dataTables_filter {
+   width: 20%;
+   float: right;
+   text-align: left;
+}
+</style>
+{% endblock css %}
+
+
+{% block js %}
+<script type="text/javascript">
+    let tabel
+    $(document).ready(() => {
+        $.ajaxSetup({
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        })
+        tabel = $('#table').DataTable({
+            paging: true,
+            autoWidth: false,
+            processing:true,
+            serverSide:false,
+            ajax: {
+              url:"{% url 'rm:pasien' %}",
+              dataSrc: ''
+            },
+            columns: [
+                {data:'nama_pasien'},
+                {data:'jenis_kelamin'},
+                {data:'umur'},
+                {data:'alamat'},
+                {data:'diagnosis'},
+                {data:'kode_diagnosis'}
+            ],
+        })
+
+        $('#form-import').on('submit', (e) => {   
+            e.preventDefault()
+            $('#import').text('Mengupload...').attr('disabled', true)
+            $.ajax({
+                url:"{% url 'rm:rm_upload' %}",
+                method: "POST",
+                data: new FormData($('form').get(0)),
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend: () => {
+                    $('#modal-import').modal('hide')
+                      Swal.showLoading()
+                },
+                success: (res) => {
+                    setTimeout(()=>{
+                      tabel.ajax.reload()
+                      $('#import').text('Import').attr('disabled', false)
+                      msg('success', 'File berhasil diupload!')
+                    }, 1000)
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                    setTimeout(()=> {
+                      tabel.ajax.reload()
+                      $('#import').html('Import').attr('disabled', false)
+                      msg('error', 'Oops.. File gagal diupload!')
+                    }, 1000)
+                }
+            })
+        })  
+    })
+
+    const importData = () => {
+        $('#form-import')[0].reset()
+        $('#modal-import').modal('show')
+    }
+</script>
+{% endblock js%}

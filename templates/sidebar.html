@@ -1,0 +1,50 @@
+<nav class="sidebar sidebar-offcanvas" id="sidebar">
+    <ul class="nav">
+      <li class="nav-item">
+        <a class="nav-link" href="/">
+          <i class="mdi mdi-home menu-icon"></i>
+          <span class="menu-title">Dashboard</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#rm" aria-expanded="false" aria-controls="ui-basic">
+          <i class="mdi mdi-account-box menu-icon"></i>
+          <span class="menu-title">Rekam Medis</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="rm">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="/rm/pasien">Pasien</a></li>
+            <li class="nav-item"> <a class="nav-link" href="/rm/penyakit">Penyakit</a></li>
+            <li class="nav-item"> <a class="nav-link" href="/rm/penyakit/klasifikasi">Klasifikasi Penyakit</a></li>
+          </ul>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/perhitungan">
+          <i class="mdi mdi-map menu-icon"></i>
+          <span class="menu-title">Perhitungan Cluster</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#hasil" aria-expanded="false" aria-controls="ui-basic">
+          <i class="mdi mdi-chart-pie menu-icon"></i>
+          <span class="menu-title">Hasil</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="hasil">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="/hasil/tabel">Tabel</a></li>
+            <li class="nav-item"> <a class="nav-link" href="/hasil/chart">Chart</a></li>
+            <li class="nav-item"> <a class="nav-link" href="/hasil/grafik">Grafik</a></li>
+          </ul>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/pengujian">
+          <i class="mdi mdi-grid-large menu-icon"></i>
+          <span class="menu-title">Pengujian Cluster</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
