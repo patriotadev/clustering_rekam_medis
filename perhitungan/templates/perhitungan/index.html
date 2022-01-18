@@ -118,13 +118,13 @@
           success: (res) => {
               setTimeout(() => {
                 tabel.ajax.reload()
-                msg('success', 'Berhasil!')
+                msg('success', 'Generate berhasil!')
               }, 1000)
           },
           error: (jqXHR, textStatus, errorThrown) => {
               setTimeout(() => {
                 tabel.ajax.reload()
-                msg('error', 'Oops.. Gagal!')
+                msg('error', 'Oops.. Generate gagal!')
               }, 1000)
           }
         })

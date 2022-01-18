@@ -1,6 +1,4 @@
-from http.client import HTTPResponse
 from django.http.response import JsonResponse
-from urllib import request
 from django.core import serializers
 from django.shortcuts import render, redirect
 from perhitungan.models import Perhitungan

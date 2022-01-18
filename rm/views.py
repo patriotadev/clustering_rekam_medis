@@ -1,5 +1,3 @@
-from ntpath import join
-from posixpath import split
 from django.core import serializers
 from django.http.response import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
@@ -79,25 +77,18 @@ def rm_upload(request):
         nama_penyakit = RM.objects.values_list('diagnosis', flat=True)
         kode_penyakit_join = ' '.join(kode_penyakit).split()
         nama_penyakit_join = ' '.join(nama_penyakit).split()
-        print(nama_penyakit_join)
+        blok_klasifikasi = Klasifikasi.objects.values_list('blok', flat=True)
+        bab_klasifikasi = Klasifikasi.objects.values_list('bab', flat=True)
+        jenis_klasifikasi = Klasifikasi.objects.values_list('jenis', flat=True)
         for kp, np in zip(kode_penyakit_join, nama_penyakit_join):
             if Penyakit.objects.filter(kode_penyakit__contains=kp) | Penyakit.objects.filter(nama_penyakit__contains=np):
                 None
             else:
-                if 'A' in kp:
-                    penyakit = Penyakit(
-                        kode_penyakit=kp, nama_penyakit=np, bab_penyakit='I', jenis_penyakit='Gangguan A')
-                elif 'B' in kp:
-                    penyakit = Penyakit(
-                        kode_penyakit=kp, nama_penyakit=np, bab_penyakit='II', jenis_penyakit='Gangguan B')
-                elif 'C' in kp:
-                    penyakit = Penyakit(
-                        kode_penyakit=kp, nama_penyakit=np, bab_penyakit='III', jenis_penyakit='Gangguan C')
-                elif 'D' in kp:
-                    penyakit = Penyakit(
-                        kode_penyakit=kp, nama_penyakit=np, bab_penyakit='IV', jenis_penyakit='Gangguan D')
-                penyakit.save()
-
+                for blok, bab, jenis in zip(blok_klasifikasi, bab_klasifikasi, jenis_klasifikasi):
+                    if kp[0] in blok:
+                        penyakit = Penyakit(
+                            kode_penyakit=kp, nama_penyakit=np, bab_penyakit=bab, jenis_penyakit=jenis)
+                        penyakit.save()
     return HttpResponse(result)
 
 
