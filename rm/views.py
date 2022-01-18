@@ -6,6 +6,7 @@ from django.shortcuts import redirect, render
 from django.core.files.storage import FileSystemStorage
 from tablib import Dataset
 from import_export import resources
+from perhitungan.models import Perhitungan
 from rm.models import RM, Klasifikasi, Penyakit
 # Create your views here.
 
@@ -58,6 +59,8 @@ def rm_upload(request):
         rm.delete()
         penyakit = Penyakit.objects.all()
         penyakit.delete()
+        perhitungan = Perhitungan.objects.all()
+        perhitungan.delete()
 
     # --> Store new data to database (rm_rm)
     if request.method == 'POST':

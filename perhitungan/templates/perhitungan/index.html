@@ -25,9 +25,7 @@
         <button type="button" class="btn btn-light bg-white btn-icon mr-3 mt-2 mt-xl-0">
           <i class="mdi mdi-plus text-muted"></i>
         </button>
-        <button class="btn btn-primary mt-2 mt-xl-0">
-          <a href="{% url 'perhitungan:generate' %}">Generate</a>
-        </button>
+        <button id="generate" class="btn btn-primary mt-2 mt-xl-0">Generate</button>
       </div>
     </div>
   </div>
@@ -40,14 +38,18 @@
           <table class="table table-hover" id="table">
             <thead>
               <tr>
-                <!-- <th>Nama Penyakit</th>
+                <th>Nama Penyakit</th>
                 <th>Jumlah Pria</th>
                 <th>Jumlah Wanita</th>
                 <th>Usia Anak-Anak</th>
                 <th>Usia Remaja</th>
                 <th>Usia Dewasa</th>
                 <th>Usia Tua</th>
-                <th>Usia Manula</th> -->
+                <th>Usia Manula</th>
+                <th>C1</th>
+                <th>C2</th>
+                <th>C3</th>
+                <th>Kelompok</th>
               </tr>
             </thead>
             <tbody>
@@ -60,5 +62,73 @@
 
   {% endblock content %}
 
+  {% block css %}
+  <style>
+    .dataTables_filter {
+    width: 20%;
+    float: right;
+    text-align: left;
+  }
+  </style>
+  {% endblock css %}
+
   {% block js %}
+  <script type="text/javascript">
+  let tabel
+  $(document).ready(()=> {
+    $.ajaxSetup({
+      'X-CSRF-TOKEN' : $('meta[name="csrf-token"').attr('content')
+    })
+    tabel = $('#table').DataTable({
+        paging: true,
+        autoWidth: false,
+        processing: true,
+        serverSide: false,
+        ajax: {
+          url: "{% url 'perhitungan:index' %}",
+          dataSrc: ''
+        },
+        columns: [
+            {data: 'nama_penyakit'},
+            {data: 'jumlah_laki'},
+            {data: 'jumlah_perempuan'},
+            {data: 'usia_anak'},
+            {data: 'usia_remaja'},
+            {data: 'usia_dewasa'},
+            {data: 'usia_tua'},
+            {data: 'usia_manula'},
+            {data: 'c1'},
+            {data: 'c2'},
+            {data: 'c3'},
+            {data: 'kelompok'},
+        ]
+    })
+
+    $('#generate').on('click', (e)=> {
+        e.preventDefault()
+        $.ajax({
+          url: "{% url 'perhitungan:generate' %}",
+          method: "POST",
+          cache: false,
+          contentType: false,
+          processData: false,
+          beforeSend: () => {
+            Swal.showLoading()
+          },
+          success: (res) => {
+              setTimeout(() => {
+                tabel.ajax.reload()
+                msg('success', 'Berhasil!')
+              }, 1000)
+          },
+          error: (jqXHR, textStatus, errorThrown) => {
+              setTimeout(() => {
+                tabel.ajax.reload()
+                msg('error', 'Oops.. Gagal!')
+              }, 1000)
+          }
+        })
+    })
+  })
+  </script>
   {% endblock js %}
