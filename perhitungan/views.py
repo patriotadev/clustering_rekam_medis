@@ -28,25 +28,23 @@ def generate(request):
                                      jenis_kelamin='P').count()
         kategori_usia = RM.objects.values_list(
             'umur', flat=True).filter(diagnosis__contains=p)
-
         perhitungan = Perhitungan(
             nama_penyakit=p, jumlah_laki=lk_count, jumlah_perempuan=pr_count)
         perhitungan.save()
-
         for u in kategori_usia:
             if int(u) <= 11:
                 Perhitungan.objects.filter(
                     nama_penyakit=p).update(usia_anak=1)
-            elif int(u) >= 12 & int(u) <= 25:
+            elif 11 < int(u) < 26:
                 Perhitungan.objects.filter(
                     nama_penyakit=p).update(usia_remaja=1)
-            elif int(u) >= 25 & int(u) <= 45:
+            elif 25 < int(u) < 46:
                 Perhitungan.objects.filter(
                     nama_penyakit=p).update(usia_dewasa=1)
-            elif int(u) >= 45 & int(u) <= 65:
+            elif 45 < int(u) < 66:
                 Perhitungan.objects.filter(
                     nama_penyakit=p).update(usia_tua=1)
-            elif int(u) > 65:
+            else:
                 Perhitungan.objects.filter(
                     nama_penyakit=p).update(usia_manula=1)
 

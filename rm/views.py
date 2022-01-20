@@ -86,9 +86,10 @@ def rm_upload(request):
             else:
                 for blok, bab, jenis in zip(blok_klasifikasi, bab_klasifikasi, jenis_klasifikasi):
                     if kp[0] in blok:
-                        penyakit = Penyakit(
-                            kode_penyakit=kp, nama_penyakit=np, bab_penyakit=bab, jenis_penyakit=jenis)
-                        penyakit.save()
+                        if int(kp[1]) <= int(blok[5]):
+                            penyakit = Penyakit(
+                                kode_penyakit=kp, nama_penyakit=np, bab_penyakit=bab, jenis_penyakit=jenis)
+                            penyakit.save()
     return HttpResponse(result)
 
 
