@@ -6,5 +6,6 @@ app_name = 'perhitungan'
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('generate', views.generate, name='generate')
+    path('generate', views.generate, name='generate'),
+    path('proses', views.proses, name='proses')
 ]

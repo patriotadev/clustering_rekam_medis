@@ -16,6 +16,7 @@ class Perhitungan(models.Model):
     c2 = models.CharField(max_length=255, blank=True, null=True)
     c3 = models.CharField(max_length=255, blank=True, null=True)
     kelompok = models.CharField(max_length=255, blank=True, null=True)
+    iteration = models.IntegerField(blank=True, null=True, default=1)
 
 
 def __str__(self):

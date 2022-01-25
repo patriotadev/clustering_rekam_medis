@@ -16,16 +16,8 @@
         </div>
       </div>
       <div class="d-flex justify-content-between align-items-end flex-wrap">
-        <button type="button" class="btn btn-light bg-white btn-icon mr-3 d-none d-md-block ">
-          <i class="mdi mdi-download text-muted"></i>
-        </button>
-        <button type="button" class="btn btn-light bg-white btn-icon mr-3 mt-2 mt-xl-0">
-          <i class="mdi mdi-clock-outline text-muted"></i> 
-        </button>
-        <button type="button" class="btn btn-light bg-white btn-icon mr-3 mt-2 mt-xl-0">
-          <i class="mdi mdi-plus text-muted"></i>
-        </button>
         <button id="generate" class="btn btn-primary mt-2 mt-xl-0">Generate</button>
+        <button id="proses" class="ml-2 btn btn-primary mt-2 mt-xl-0" hidden>Proses Data</button>
       </div>
     </div>
   </div>
@@ -105,6 +97,9 @@
     })
 
     $('#generate').on('click', (e)=> {
+        $('#proses').removeAttr('hidden')
+        $('#proses').show()
+        $('#generate').hide()
         e.preventDefault()
         $.ajax({
           url: "{% url 'perhitungan:generate' %}",
@@ -128,6 +123,34 @@
               }, 1000)
           }
         })
+    })
+
+    $('#proses').on('click', (e) => {
+      $('#proses').hide()
+      $('#generate').show()
+      e.preventDefault()
+      $.ajax({
+        url: "{% url 'perhitungan:proses' %}",
+        method: "POST",
+        cache: false,
+        contentType: false,
+        processData: false,
+        beforeSend: () => {
+          Swal.showLoading()
+        },
+        success: () => {
+          setTimeout(() => {
+            tabel.ajax.reload()
+            msg('success', 'Proses berhasil!')
+          }, 1000)
+        },
+        error: () => {
+          setTimeout(() => {
+            tabel.ajax.reload()
+            msg('error', 'Oops.. Proses Gagal!')
+          }, 1000)
+        }
+      })
     })
   })
   </script>
