@@ -125,50 +125,54 @@ def proses(request):
             iteration=1, id=data[0]).update(kelompok=kelompok[d])
 
     # Iteration Count
-    dataSet = Perhitungan.objects.filter(iteration=1).values_list()
+    dataSet = Perhitungan.objects.filter(
+        iteration=1).order_by('id').values_list()
     i = 2
-    while not Perhitungan.objects.filter(iteration__gt=1) or i != 3:
-        maxIteration = Perhitungan.objects.all().values_list(
-            'iteration', flat=True).order_by('-iteration')[0]
-
+    while not Perhitungan.objects.filter(iteration__gt=1) or equal_value == False:
         for data in dataSet:
             Perhitungan(
-                nama_penyakit=data[1], jumlah_perempuan=data[2], jumlah_laki=data[3], usia_anak=data[4], usia_remaja=data[5], usia_dewasa=data[6], usia_tua=data[7], usia_manula=data[8], iteration=i).save()
+                nama_penyakit=data[1], jumlah_laki=data[2], jumlah_perempuan=data[3], usia_anak=data[4], usia_remaja=data[5], usia_dewasa=data[6], usia_tua=data[7], usia_manula=data[8], iteration=i).save()
 
         # --> Get cluster 1 centroid
         centroid1 = Perhitungan.objects.filter(
             kelompok='C1', iteration=i-1).values_list()
+        centroid1_count = Perhitungan.objects.filter(
+            kelompok='C1', iteration=i-1).count()
         centroid1_list = list()
         for c in range(2, 9):
             column_temp = 0
             for data in centroid1:
                 print(data[c], data[1])
                 column_temp += data[c]
-            centroid1_list.append(column_temp)
+            centroid1_list.append(column_temp / centroid1_count)
         print(centroid1_list)
 
         # --> Get cluster 2 centroid
         centroid2 = Perhitungan.objects.filter(
             kelompok='C2', iteration=i-1).values_list()
+        centroid2_count = Perhitungan.objects.filter(
+            kelompok='C2', iteration=i-1).count()
         centroid2_list = list()
         for c in range(2, 9):
             column_temp = 0
             for data in centroid2:
                 print(data[c], data[1])
                 column_temp += data[c]
-            centroid2_list.append(column_temp)
+            centroid2_list.append(column_temp / centroid2_count)
         print(centroid2_list)
 
         # --> Get cluster 3 centroid
         centroid3 = Perhitungan.objects.filter(
             kelompok='C3', iteration=i-1).values_list()
+        centroid3_count = Perhitungan.objects.filter(
+            kelompok='C3', iteration=i-1).count()
         centroid3_list = list()
         for c in range(2, 9):
             column_temp = 0
             for data in centroid3:
                 print(data[c], data[1])
                 column_temp += data[c]
-            centroid3_list.append(column_temp)
+            centroid3_list.append(column_temp / centroid3_count)
         print(centroid3_list)
 
         # --> Euclidean Distance for iteration > 1
@@ -230,6 +234,22 @@ def proses(request):
         for d, data in zip(range(dataCount), dataSet):
             Perhitungan.objects.filter(
                 iteration=i, id=data[0]).update(kelompok=kelompok[d])
+
+        # --> Stop iteration IF
+        current_iteration = Perhitungan.objects.filter(
+            iteration=i).order_by('id').values_list('kelompok')
+        last_iteration = Perhitungan.objects.filter(
+            iteration=i-1).order_by('id').values_list('kelompok')
+
+        current_iteration_array = np.array([current_iteration])
+        last_iteration_array = np.array([last_iteration])
+
+        compare_iteration = current_iteration_array == last_iteration_array
+        equal_value = compare_iteration.all()
+
+        print(current_iteration_array)
+        print(last_iteration_array)
+        print(equal_value)
 
         i += 1
 
